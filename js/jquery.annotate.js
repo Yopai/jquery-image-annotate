@@ -382,6 +382,7 @@
 
             // Add the delete button
             var del = $('<a class="image-annotate-edit-delete">Delete</a>');
+            var _image = this.image;
             del.click(function() {
                 var form = $('#image-annotate-edit-form form');
 
@@ -396,6 +397,9 @@
                 }
 
                 annotation.image.mode = 'view';
+                var idx = _image.notes.findIndex(function(note) { return note === editable.note; });
+                _image.notes.splice(idx, 1);
+
                 editable.destroy();
                 annotation.destroy();
             });
