@@ -66,8 +66,13 @@ A minimized distribution of the plugin and required resources is available in ``
 To rebuild yourself do:
 
 ```sh
+# (if needed) Install grunt
+# sudo apt install node-grunt-cli
+
 # Download jQuery dependencies
 bower install
+# Install npm dependencies
+npm install
 # Delete dist directory
 grunt clean
 # Build
