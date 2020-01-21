@@ -1,5 +1,6 @@
 /// <reference path="jquery-1.2.6-vsdoc.js" />
 (function($) {
+    'use strict';
 
     $.fn.annotateImage = function(options) {
         ///	<summary>
@@ -35,7 +36,7 @@
 
         // Add the behavior: hide/show the notes when hovering the picture
         this.canvas.hover(function() {
-            if ($(this).children('.image-annotate-edit').css('display') == 'none') {
+            if ($(this).children('.image-annotate-edit').css('display') === 'none') {
                 $(this).children('.image-annotate-view').show();
             }
         }, function() {
@@ -79,17 +80,17 @@
         deleteUrl: 'your-delete.rails',
         editable: true,
         useAjax: true,
-        notes: new Array()
+        notes: []
     };
 
     $.fn.annotateImage.clear = function(image) {
         ///	<summary>
         ///		Clears all existing annotations from the image.
-        ///	</summary>    
+        ///	</summary>
         for (var i = 0; i < image.notes.length; i++) {
             image.notes[image.notes[i]].destroy();
         }
-        image.notes = new Array();
+        image.notes = [];
     };
 
     $.fn.annotateImage.ajaxLoad = function(image) {
@@ -117,7 +118,7 @@
         ///	<summary>
         ///		Gets a count og the ticks for the current date.
         ///     This is used to ensure that URLs are always unique and not cached by the browser.
-        ///	</summary>        
+        ///	</summary>
         var now = new Date();
         return now.getTime();
     };
@@ -125,8 +126,8 @@
     $.fn.annotateImage.add = function(image) {
         ///	<summary>
         ///		Adds a note to the image.
-        ///	</summary>        
-        if (image.mode == 'view') {
+        ///	</summary>
+        if (image.mode === 'view') {
             image.mode = 'edit';
 
             // Create/prepare the editable note elements
@@ -146,7 +147,7 @@
         ok.click(function() {
             var form = $('#image-annotate-edit-form form');
             var text = $('#image-annotate-text').val();
-            $.fn.annotateImage.appendPosition(form, editable)
+            $.fn.annotateImage.appendPosition(form, editable);
             image.mode = 'view';
 
             // Save via AJAX
@@ -154,12 +155,12 @@
                 $.ajax({
                     url: image.saveUrl,
                     data: form.serialize(),
-                    error: function(e) { alert("An error occured saving that note.") },
+                    error: function(e) { alert("An error occured saving that note."); },
                     success: function(data) {
-				if (data.annotation_id != undefined) {
-					editable.note.id = data.annotation_id;
-				}
-		    },
+                        if (data.annotation_id !== undefined) {
+                            editable.note.id = data.annotation_id;
+                        }
+                    },
                     dataType: "json"
                 });
             }
@@ -169,7 +170,7 @@
                 note.resetPosition(editable, text);
             } else {
                 editable.note.editable = true;
-                note = new $.fn.annotateView(image, editable.note)
+                note = new $.fn.annotateView(image, editable.note);
                 note.resetPosition(editable, text);
                 image.notes.push(editable.note);
             }
@@ -217,7 +218,7 @@
         if (note) {
             this.note = note;
         } else {
-            var newNote = new Object();
+            var newNote = {};
             newNote.id = "new";
             newNote.top = 30;
             newNote.left = 30;
@@ -274,7 +275,7 @@
     $.fn.annotateEdit.prototype.destroy = function() {
         ///	<summary>
         ///		Destroys an editable annotation area.
-        ///	</summary>        
+        ///	</summary>
         this.image.canvas.children('.image-annotate-edit').hide();
         this.area.resizable('destroy');
         this.area.draggable('destroy');
@@ -283,7 +284,7 @@
         this.area.css('left', '');
         this.area.css('top', '');
         this.form.remove();
-    }
+    };
 
     $.fn.annotateView = function(image, note) {
         ///	<summary>
@@ -352,7 +353,7 @@
     $.fn.annotateView.prototype.hide = function() {
         ///	<summary>
         ///		Removes the highlight from the annotation.
-        ///	</summary>      
+        ///	</summary>
         this.form.fadeOut(250);
         this.area.removeClass('image-annotate-area-hover');
         this.area.removeClass('image-annotate-area-editable-hover');
@@ -361,16 +362,16 @@
     $.fn.annotateView.prototype.destroy = function() {
         ///	<summary>
         ///		Destroys the annotation.
-        ///	</summary>      
+        ///	</summary>
         this.area.remove();
         this.form.remove();
-    }
+    };
 
     $.fn.annotateView.prototype.edit = function() {
         ///	<summary>
         ///		Edits the annotation.
-        ///	</summary>      
-        if (this.image.mode == 'view') {
+        ///	</summary>
+        if (this.image.mode === 'view') {
             this.image.mode = 'edit';
             var annotation = this;
 
@@ -384,13 +385,13 @@
             del.click(function() {
                 var form = $('#image-annotate-edit-form form');
 
-                $.fn.annotateImage.appendPosition(form, editable)
+                $.fn.annotateImage.appendPosition(form, editable);
 
                 if (annotation.image.useAjax) {
                     $.ajax({
                         url: annotation.image.deleteUrl,
                         data: form.serialize(),
-                        error: function(e) { alert("An error occured deleting that note.") }
+                        error: function(e) { alert("An error occured deleting that note."); }
                     });
                 }
 
@@ -414,7 +415,7 @@
                            '<input type="hidden" value="' + editable.area.position().left + '" name="left"/>' +
                            '<input type="hidden" value="' + editable.note.id + '" name="id"/>');
         form.append(areaFields);
-    }
+    };
 
     $.fn.annotateView.prototype.resetPosition = function(editable, text) {
         ///	<summary>
